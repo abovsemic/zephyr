@@ -6,3 +6,9 @@ CONFIG_UART_CONSOLE=y
 CONFIG_SERIAL=y
 
 CONFIG_GPIO=y
+
+# A31C156's HSI is 48 MHz (see startup_a31c15x.h's HSI_CLOCK); the
+# clock_control_abov32 driver's own default of 8 MHz is for a different part
+# and would miscompute the USART baud-rate divisor since nothing switches the
+# core off HSI at boot.
+CONFIG_CLOCK_ABOV32_HSI_FREQUENCY=48000000
