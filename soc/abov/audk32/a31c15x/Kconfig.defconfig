@@ -8,7 +8,4 @@ if SOC_SERIES_A31C15X
 config NUM_IRQS
 	default 32
 
-config NUM_IRQ_PRIO_BITS
-	default 2
-
 endif # SOC_SERIES_A31C15X
