@@ -1,0 +1,18 @@
+# ABOV Semiconductor A31C15x MCU series
+
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+#
+config SOC_SERIES_A31C15X
+	bool
+	select SOC_FAMILY_ABOV32
+
+config SOC_SERIES
+	default "a31c15x" if SOC_SERIES_A31C15X
+
+config SOC_A31C156
+        bool
+        select SOC_SERIES_A31C15X 
+
+config SOC
+	default "a31c156" if SOC_A31C156

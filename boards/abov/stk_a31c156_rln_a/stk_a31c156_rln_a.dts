@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+/dts-v1/;
+
+#include <abov/a31c15x/abov_a31c15x.dtsi>
+#include "stk_a31c156_rln_a-pinctrl.dtsi"
+
+/ {
+	model = "ABOV STK-A31C156-RLN-A Starter Kit";
+	compatible = "abov,stk-a31c156-rln-a";
+
+	chosen {
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zephyr,console = &usart10;
+		zephyr,shell-uart = &usart10;
+	};
+
+	/* TODO: re-enable once the GPIO driver/binding for ABOV32 exists. */
+	/*
+	 * leds {
+	 *	compatible = "gpio-leds";
+	 *	led0: led_0 {
+	 *		gpios = <&gpioe 0 GPIO_ACTIVE_HIGH>;
+	 *		label = "STK LED 0";
+	 *	};
+	 *	led1: led_1 {
+	 *		gpios = <&gpioe 1 GPIO_ACTIVE_HIGH>;
+	 *		label = "STK LED 1";
+	 *	};
+	 * };
+	 */
+};
+
+&usart10 {
+	status = "okay";
+	current-speed = <38400>;
+	pinctrl-0 = <&usart10_default>;
+	pinctrl-names = "default";
+};
+
+/* TODO: re-enable once the I2C driver/binding for ABOV32 exists. */
+/*
+ * &i2c0 {
+ *	status = "okay";
+ *	pinctrl-0 = <&i2c0_default>;
+ *	pinctrl-names = "default";
+ * };
+ */

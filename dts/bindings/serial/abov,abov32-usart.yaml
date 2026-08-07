@@ -1,0 +1,28 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+description: |
+  ABOV32 USART controller, driven in asynchronous (UART) mode via the ABOV
+  HAL USART API (hal_usart.h). The same IP also supports synchronous and SPI
+  modes, which are not exposed by this binding/driver yet.
+
+compatible: "abov,abov32-usart"
+
+include: [uart-controller.yaml, pinctrl-device.yaml, base.yaml]
+
+properties:
+  reg:
+    required: true
+
+  interrupts:
+    required: true
+
+  clocks:
+    required: true
+
+  usart-id:
+    type: int
+    required: true
+    description: |
+      HAL USART_ID_e instance index. On A31C15x, 0 = USART10, 1 = USART11,
+      2 = USART12.

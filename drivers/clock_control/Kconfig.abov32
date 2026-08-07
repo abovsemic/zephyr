@@ -1,0 +1,29 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+config CLOCK_CONTROL_ABOV32
+	bool "ABOV32 clock control"
+	default y
+	depends on DT_HAS_ABOV_ABOV32_CCTL_ENABLED
+	help
+	  Enable driver for ABOV System Control Clock Unit.
+
+if CLOCK_CONTROL_ABOV32
+
+config CLOCK_ABOV32_HSI_FREQUENCY
+	int "ABOV32 HSI oscillator frequency (Hz)"
+	default 8000000
+	help
+	  Frequency of the internal high-speed (HSI) oscillator. This is
+	  fixed by the SoC and is not described in devicetree.
+
+config CLOCK_ABOV32_LSI_FREQUENCY
+	int "ABOV32 LSI oscillator frequency (Hz)"
+	default 0
+	help
+	  Frequency of the internal low-speed (LSI) oscillator, in Hz. Must
+	  be set to the value from the SoC datasheet before any LSI-derived
+	  clock is used; the default of 0 is a placeholder, not a valid
+	  oscillator frequency.
+
+endif # CLOCK_CONTROL_ABOV32

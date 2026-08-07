@@ -1,0 +1,9 @@
+# ABOV Semiconductor A31C15x MCU series
+
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+config SOC_SERIES_A31C15X
+	select ARM
+	select CPU_CORTEX_M0+
+	select SOC_EARLY_INIT_HOOK
