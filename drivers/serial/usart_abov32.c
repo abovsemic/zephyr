@@ -245,11 +245,9 @@ static int usart_abov32_irq_is_pending(const struct device *dev)
 	return usart_abov32_irq_tx_ready(dev) || usart_abov32_irq_rx_ready(dev);
 }
 
-static int usart_abov32_irq_update(const struct device *dev)
+static void usart_abov32_irq_update(const struct device *dev)
 {
 	ARG_UNUSED(dev);
-
-	return 1;
 }
 
 static void usart_abov32_irq_callback_set(const struct device *dev,
