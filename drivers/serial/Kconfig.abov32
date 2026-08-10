@@ -6,6 +6,7 @@ config USART_ABOV32
 	default y
 	depends on DT_HAS_ABOV_ABOV32_USART_ENABLED
 	select PINCTRL
+	select CLOCK_CONTROL
 	select SERIAL_HAS_DRIVER
 	select SERIAL_SUPPORT_INTERRUPT
 	help
