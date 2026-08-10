@@ -95,7 +95,7 @@ typedef uint32_t pinctrl_soc_pin_t;
 	(DT_PROP_BY_IDX(node_id, prop, idx) |				       \
 	 ((ABOV_PUPD_PULLUP * DT_PROP(node_id, bias_pull_up)) << ABOV_PUPD_POS) | \
 	 ((ABOV_PUPD_PULLDN * DT_PROP(node_id, bias_pull_down)) << ABOV_PUPD_POS) | \
-	 ((ABOV_OTYPE_OD * DT_PROP(node_id, drive_open_drain)) << ABOV_OTYPE_POS))
+	 ((ABOV_OTYPE_OD * DT_PROP(node_id, drive_open_drain)) << ABOV_OTYPE_POS)),
 
 /**
  * @brief Utility macro to initialize state pins contained in a given property.
