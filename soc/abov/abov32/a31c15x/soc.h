@@ -17,6 +17,15 @@
 #define _A31C15X_SOC_H_
 
 #ifndef _ASMLANGUAGE
+
+/* CMSIS device header from the ABOV HAL (modules/hal/abov32). It supplies
+ * __NVIC_PRIO_BITS, the IRQn_Type enum and the peripheral register structs.
+ * Its own core_cm0plus.h/system_a31xxxx.h includes are compiled out under
+ * Zephyr (see the __ZEPHYR__ guard in a31c15x.h) so they don't collide with
+ * the CMSIS core Zephyr already provides via modules/cmsis_6.
+ */
+#include "a31c15x.h"
+
 #endif /* !_ASMLANGUAGE */
 
 #endif /* _A31C15X_SOC_H_ */
