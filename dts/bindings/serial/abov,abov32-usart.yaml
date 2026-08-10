@@ -24,5 +24,4 @@ properties:
     type: int
     required: true
     description: |
-      HAL USART_ID_e instance index. On A31C15x, 0 = USART10, 1 = USART11,
-      2 = USART12.
+      HAL USART_ID_e instance index (0 = USART10, 1 = USART11, 2 = USART12).

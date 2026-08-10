@@ -5,7 +5,7 @@
 
 /dts-v1/;
 
-#include <abov/a31c15x/abov_a31c15x.dtsi>
+#include <abov/a31xxxx/a31c15x/abov_a31c15x.dtsi>
 #include "stk_a31c156_rln_a-pinctrl.dtsi"
 
 / {

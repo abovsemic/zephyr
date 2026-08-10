@@ -5,7 +5,7 @@
 #
 config SOC_SERIES_A31C15X
 	bool
-	select SOC_FAMILY_ABOV32
+	select SOC_PRODUCT_LINE_A31XXXX
 
 config SOC_SERIES
 	default "a31c15x" if SOC_SERIES_A31C15X
