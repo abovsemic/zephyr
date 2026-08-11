@@ -7,6 +7,13 @@ CONFIG_SERIAL=y
 
 CONFIG_GPIO=y
 
+# Without this, CLOCK_CONTROL_ABOV32 never gets enabled (it lives inside the
+# CLOCK_CONTROL menuconfig block), so clock_control_abov32_init() never runs:
+# SCU_SCCR stays at its power-on-reset default (HCLKDIV=/8) and
+# SystemCoreClock/SystemPeriClock never get updated to match, breaking the
+# USART baud-rate divisor.
+CONFIG_CLOCK_CONTROL=y
+
 # A31C156's HSI is 48 MHz (see startup_a31c15x.h's HSI_CLOCK); the
 # clock_control_abov32 driver's own default of 8 MHz is for a different part
 # and would miscompute the USART baud-rate divisor since nothing switches the
