@@ -1,0 +1,34 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+description: |
+  ABOV32 Port Control Unit (PCU) GPIO port.
+
+  Each PCU port (A..G) is exposed as one gpio-controller node. The HAL API
+  (HLL_PCU_*()/HAL_PCU_*(), see modules/hal/abov32/audk32/Platform/HAL/Include/
+  hll_pcu.h) addresses a port by its PCU_ID_e index rather than by register
+  address, so port-id -- not reg -- is what the driver actually uses.
+
+compatible: "abov,abov32-gpio"
+
+include: [gpio-controller.yaml, base.yaml]
+
+properties:
+  reg:
+    required: true
+
+  port-id:
+    type: int
+    required: true
+    description: |
+      PCU_ID_e port index this node drives (see
+      modules/hal/abov32/audk32/Platform/HAL/Include/type/pcu_type.h):
+      0=PCU_ID_A, 1=PCU_ID_B, 2=PCU_ID_C, 3=PCU_ID_D, 4=PCU_ID_E, 5=PCU_ID_F,
+      6=PCU_ID_G.
+
+  "#gpio-cells":
+    const: 2
+
+gpio-cells:
+  - pin
+  - flags

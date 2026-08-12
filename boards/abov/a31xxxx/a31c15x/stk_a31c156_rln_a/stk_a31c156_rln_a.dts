@@ -7,6 +7,7 @@
 
 #include <abov/a31xxxx/a31c15x/abov_a31c15x.dtsi>
 #include "stk_a31c156_rln_a-pinctrl.dtsi"
+#include <zephyr/dt-bindings/gpio/gpio.h>
 
 / {
 	model = "ABOV STK-A31C156-RLN-A Starter Kit";
@@ -19,20 +20,42 @@
 		zephyr,shell-uart = &usart10;
 	};
 
-	/* TODO: re-enable once the GPIO driver/binding for ABOV32 exists. */
-	/*
-	 * leds {
-	 *	compatible = "gpio-leds";
-	 *	led0: led_0 {
-	 *		gpios = <&gpioe 0 GPIO_ACTIVE_HIGH>;
-	 *		label = "STK LED 0";
-	 *	};
-	 *	led1: led_1 {
-	 *		gpios = <&gpioe 1 GPIO_ACTIVE_HIGH>;
-	 *		label = "STK LED 1";
-	 *	};
-	 * };
-	 */
+	leds {
+		compatible = "gpio-leds";
+		led0: led_0 {
+			gpios = <&gpioe 0 GPIO_ACTIVE_LOW>;
+			label = "STK LED 0";
+		};
+		led1: led_1 {
+			gpios = <&gpioe 1 GPIO_ACTIVE_LOW>;
+			label = "STK LED 1";
+		};
+		led2: led_2 {
+			gpios = <&gpioe 2 GPIO_ACTIVE_LOW>;
+			label = "STK LED 2";
+		};
+		led3: led_3 {
+			gpios = <&gpioe 3 GPIO_ACTIVE_LOW>;
+			label = "STK LED 3";
+		};
+		led4: led_4 {
+			gpios = <&gpioe 4 GPIO_ACTIVE_LOW>;
+			label = "STK LED 4";
+		};
+		led5: led_5 {
+			gpios = <&gpioe 5 GPIO_ACTIVE_LOW>;
+			label = "STK LED 5";
+		};
+	};
+
+	aliases {
+		led0 = &led0;
+		led1 = &led1;
+		led2 = &led2;
+		led3 = &led3;
+		led4 = &led4;
+		led5 = &led5;
+	};
 };
 
 &usart10 {

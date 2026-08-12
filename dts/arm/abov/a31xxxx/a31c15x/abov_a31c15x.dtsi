@@ -37,6 +37,15 @@
 			reg = <0x40090000 0x1000>;
 		};
 
+		gpioe: gpio@40090400 {
+			compatible = "abov,abov32-gpio";
+			reg = <0x40090400 0x100>;
+			port-id = <4>;
+			gpio-controller;
+			#gpio-cells = <2>;
+			ngpios = <16>;
+		};
+
 		cctl: cctl@40000000 {
 			compatible = "abov,abov32-cctl";
 			reg = <0x40000000 0x400>;
