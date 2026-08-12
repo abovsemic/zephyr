@@ -19,3 +19,5 @@ CONFIG_CLOCK_CONTROL=y
 # and would miscompute the USART baud-rate divisor since nothing switches the
 # core off HSI at boot.
 CONFIG_CLOCK_ABOV32_HSI_FREQUENCY=48000000
+
+CONFIG_BUILD_OUTPUT_HEX=y

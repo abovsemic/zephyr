@@ -292,6 +292,12 @@ manifest:
       path: modules/hal/xtensa
       groups:
         - hal
+    - name: hal_abov
+      url: git@github.com:abovsemiconductor/zephyr_hal.git
+      revision: main
+      path: modules/hal/abov32
+      groups:
+        - hal
     - name: hostap
       path: modules/lib/hostap
       revision: d467a115b8fc20b8b7120937cb1d445dacebc6a1
