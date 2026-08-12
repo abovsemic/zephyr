@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
 
-/* 200 msec between steps */
-#define SLEEP_TIME_MS 200
+/* 100 msec between steps */
+#define SLEEP_TIME_MS 100
 
 /*
  * A build error on this line means your board is unsupported.
