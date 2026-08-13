@@ -41,6 +41,19 @@
 			compatible = "abov,abov32-gpio";
 			reg = <0x40090400 0x100>;
 			port-id = <4>;
+			/* GPIOEF_IRQn: shared with Port F, see gpio_abov32_isr(). */
+			interrupts = <13 0>;
+			gpio-controller;
+			#gpio-cells = <2>;
+			ngpios = <16>;
+		};
+
+		gpiof: gpio@40090500 {
+			compatible = "abov,abov32-gpio";
+			reg = <0x40090500 0x100>;
+			port-id = <5>;
+			/* GPIOEF_IRQn: shared with Port E, see gpio_abov32_isr(). */
+			interrupts = <13 0>;
 			gpio-controller;
 			#gpio-cells = <2>;
 			ngpios = <16>;

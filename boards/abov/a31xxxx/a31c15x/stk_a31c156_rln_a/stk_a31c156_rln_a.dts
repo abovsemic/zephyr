@@ -48,6 +48,18 @@
 		};
 	};
 
+	buttons {
+		compatible = "gpio-keys";
+		button0: button_0 {
+			gpios = <&gpiof 6 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "STK Button 0";
+		};
+		button1: button_1 {
+			gpios = <&gpiof 7 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "STK Button 1";
+		};
+	};
+
 	aliases {
 		led0 = &led0;
 		led1 = &led1;
@@ -55,6 +67,8 @@
 		led3 = &led3;
 		led4 = &led4;
 		led5 = &led5;
+		sw0 = &button0;
+		sw1 = &button1;
 	};
 };
 

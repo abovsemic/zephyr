@@ -8,6 +8,8 @@
 
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/gpio/gpio_utils.h>
+#include <zephyr/init.h>
+#include <zephyr/irq.h>
 
 /* Platform HAL headers */
 #include <hal_pcu.h>
@@ -21,6 +23,7 @@ struct gpio_abov32_config {
 struct gpio_abov32_data {
 	/* gpio_driver_data needs to be first */
 	struct gpio_driver_data common;
+	sys_slist_t callbacks;
 };
 
 static int gpio_abov32_pin_configure(const struct device *dev, gpio_pin_t pin,
@@ -137,6 +140,129 @@ static int gpio_abov32_port_toggle_bits(const struct device *dev, gpio_port_pins
 	return 0;
 }
 
+/*
+ * PCU_INTR_MODE_e/PCU_INTR_TRG_e are a (mode x trigger) pair: the mode
+ * selects level- vs edge-sensing, the trigger selects which physical level
+ * (or edge direction) it reacts to. By the time flags reach here,
+ * z_impl_gpio_pin_interrupt_configure() has already resolved GPIO_ACTIVE_LOW
+ * into the physical trigger direction, so no extra inversion is needed.
+ */
+static int gpio_abov32_pin_interrupt_configure(const struct device *dev, gpio_pin_t pin,
+						enum gpio_int_mode mode, enum gpio_int_trig trig)
+{
+	const struct gpio_abov32_config *config = dev->config;
+	PCU_INTR_MODE_e pcu_mode;
+	PCU_INTR_TRG_e pcu_trig;
+
+	if (mode == GPIO_INT_MODE_DISABLED) {
+		pcu_mode = PCU_INTR_MODE_DISABLE;
+		pcu_trig = PCU_INTR_TRG_DISABLE;
+	} else {
+		pcu_mode = (mode == GPIO_INT_MODE_EDGE) ? PCU_INTR_MODE_EDGE
+							 : PCU_INTR_MODE_LEVEL_NONPEND;
+
+		switch (trig) {
+		case GPIO_INT_TRIG_LOW:
+			pcu_trig = PCU_INTR_TRG_LOW_FALLING;
+			break;
+		case GPIO_INT_TRIG_HIGH:
+			pcu_trig = PCU_INTR_TRG_HIGH_RISING;
+			break;
+		case GPIO_INT_TRIG_BOTH:
+			pcu_trig = PCU_INTR_TRG_BOTH_LEVEL_EDGE;
+			break;
+		default:
+			return -ENOTSUP;
+		}
+	}
+
+	if (HAL_PCU_SetIntrPort(config->port_id, (PCU_PIN_ID_e)pin, pcu_mode, pcu_trig, 0U) !=
+	    HAL_ERR_OK) {
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+static int gpio_abov32_manage_callback(const struct device *dev, struct gpio_callback *callback,
+					bool set)
+{
+	struct gpio_abov32_data *data = dev->data;
+
+	return gpio_manage_callback(&data->callbacks, callback, set);
+}
+
+/* Indexed by PCU_ID_e; populated as each abov,abov32-gpio instance inits. */
+static const struct device *gpio_abov32_ports[PCU_ID_MAX];
+
+static void gpio_abov32_port_isr(const struct device *dev)
+{
+	const struct gpio_abov32_config *config = dev->config;
+	struct gpio_abov32_data *data = dev->data;
+	gpio_port_pins_t fired = 0U;
+
+	for (uint32_t pin = 0U; pin < PCU_PIN_ID_MAX; pin++) {
+		PCU_INTR_STATUS_e status;
+
+		/* HAL_PCU_GetIntrStatus() clears the flag as it reads it. */
+		if (HAL_PCU_GetIntrStatus(config->port_id, (PCU_PIN_ID_e)pin, &status) ==
+			    HAL_ERR_OK &&
+		    status != PCU_INTR_STATUS_NONE) {
+			fired |= (gpio_port_pins_t)BIT(pin);
+		}
+	}
+
+	if (fired != 0U) {
+		gpio_fire_callbacks(&data->callbacks, dev, fired);
+	}
+}
+
+/*
+ * PCU pairs ports onto shared NVIC lines (A+B, C+D, E+F, ...), so one
+ * physical interrupt can belong to more than one abov,abov32-gpio instance.
+ * Rather than hardcode that pairing, this shared handler polls every
+ * *registered* port -- HAL_PCU_GetIntrStatus() on a port with nothing
+ * pending just returns PCU_INTR_STATUS_NONE, so this stays correct (and
+ * cheap, at most PCU_ID_MAX ports) regardless of which ports end up sharing
+ * a line.
+ */
+static void gpio_abov32_isr(const struct device *arg)
+{
+	ARG_UNUSED(arg);
+
+	for (size_t i = 0U; i < ARRAY_SIZE(gpio_abov32_ports); i++) {
+		if (gpio_abov32_ports[i] != NULL) {
+			gpio_abov32_port_isr(gpio_abov32_ports[i]);
+		}
+	}
+}
+
+/*
+ * Each shared NVIC line must be IRQ_CONNECT()'d from exactly one call site:
+ * gen_isr_tables.py rejects a second registration for the same line, even
+ * with an identical handler, so this can't just be done from every per-port
+ * instance's own init. Pick whichever of a shared line's ports is actually
+ * enabled to source the connect; when both are, either works since they
+ * report the same DT_IRQN().
+ */
+#if DT_NODE_HAS_STATUS_OKAY(DT_NODELABEL(gpioe))
+#define GPIO_ABOV32_EF_IRQ_NODE DT_NODELABEL(gpioe)
+#elif DT_NODE_HAS_STATUS_OKAY(DT_NODELABEL(gpiof))
+#define GPIO_ABOV32_EF_IRQ_NODE DT_NODELABEL(gpiof)
+#endif
+
+static int gpio_abov32_shared_irq_init(void)
+{
+#if defined(GPIO_ABOV32_EF_IRQ_NODE)
+	IRQ_CONNECT(DT_IRQN(GPIO_ABOV32_EF_IRQ_NODE), DT_IRQ(GPIO_ABOV32_EF_IRQ_NODE, priority),
+		    gpio_abov32_isr, NULL, 0);
+	irq_enable(DT_IRQN(GPIO_ABOV32_EF_IRQ_NODE));
+#endif
+	return 0;
+}
+
+SYS_INIT(gpio_abov32_shared_irq_init, POST_KERNEL, CONFIG_GPIO_INIT_PRIORITY);
+
 static DEVICE_API(gpio, gpio_abov32_driver_api) = {
 	.pin_configure = gpio_abov32_pin_configure,
 	.port_get_raw = gpio_abov32_port_get_raw,
@@ -144,6 +270,8 @@ static DEVICE_API(gpio, gpio_abov32_driver_api) = {
 	.port_set_bits_raw = gpio_abov32_port_set_bits_raw,
 	.port_clear_bits_raw = gpio_abov32_port_clear_bits_raw,
 	.port_toggle_bits = gpio_abov32_port_toggle_bits,
+	.pin_interrupt_configure = gpio_abov32_pin_interrupt_configure,
+	.manage_callback = gpio_abov32_manage_callback,
 };
 
 #define GPIO_ABOV32_INIT(inst)                                                                   \
@@ -154,7 +282,12 @@ static DEVICE_API(gpio, gpio_abov32_driver_api) = {
 		.port_id = (PCU_ID_e)DT_INST_PROP(inst, port_id),                                 \
 	};                                                                                         \
 	static struct gpio_abov32_data gpio_abov32_data_##inst;                                   \
-	DEVICE_DT_INST_DEFINE(inst, NULL, NULL, &gpio_abov32_data_##inst,                         \
+	static int gpio_abov32_init_##inst(const struct device *dev)                             \
+	{                                                                                          \
+		gpio_abov32_ports[gpio_abov32_config_##inst.port_id] = dev;                      \
+		return 0;                                                                         \
+	}                                                                                          \
+	DEVICE_DT_INST_DEFINE(inst, gpio_abov32_init_##inst, NULL, &gpio_abov32_data_##inst,      \
 			      &gpio_abov32_config_##inst, POST_KERNEL,                            \
 			      CONFIG_GPIO_INIT_PRIORITY, &gpio_abov32_driver_api);
 
