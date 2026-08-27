@@ -65,6 +65,14 @@
 			#clock-cells = <1>;
 		};
 
+		crc0: crc@40082000 {
+			compatible = "abov,abov32-crc";
+			reg = <0x40082000 0x100>;
+			crc-id = <0>;
+			clocks = <&cctl ABOV32_CLOCK_PCLK>;
+			status = "disabled";
+		};
+
 		uart0: uart@40008000 {
 			compatible = "abov,abov32-uart";
 			reg = <0x40008000 0x100>;

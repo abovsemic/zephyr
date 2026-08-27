@@ -18,6 +18,7 @@
 		zephyr,flash = &flash0;
 		zephyr,console = &usart10;
 		zephyr,shell-uart = &usart10;
+		zephyr,crc = &crc0;
 	};
 
 	leds {
@@ -77,6 +78,10 @@
 	current-speed = <38400>;
 	pinctrl-0 = <&usart10_default>;
 	pinctrl-names = "default";
+};
+
+&crc0 {
+	status = "okay";
 };
 
 /* TODO: re-enable once the I2C driver/binding for ABOV32 exists. */

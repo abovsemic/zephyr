@@ -1,0 +1,26 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+description: |
+  ABOV32 CRC (Cyclic Redundancy Check) controller, driven via the ABOV HLL
+  CRC register-level API (hll_crc.h). Supports a fixed set of hardware
+  polynomials (CRC-8, CRC-16, CRC-16/CCITT, CRC-32) selected per calculation
+  by the zephyr,crc driver API; there is no user-programmable polynomial
+  register on this IP.
+
+compatible: "abov,abov32-crc"
+
+include: [base.yaml]
+
+properties:
+  reg:
+    required: true
+
+  clocks:
+    required: true
+
+  crc-id:
+    type: int
+    required: true
+    description: |
+      HAL CRC_ID_e instance index (0 = CRC0).

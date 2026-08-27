@@ -1,0 +1,15 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
+config CRC_DRIVER_ABOV32
+	bool "ABOV32 CRC driver"
+	default y
+	depends on DT_HAS_ABOV_ABOV32_CRC_ENABLED
+	select CRC_DRIVER_HAS_CRC8
+	select CRC_DRIVER_HAS_CRC16
+	select CRC_DRIVER_HAS_CRC16_CCITT
+	select CRC_DRIVER_HAS_CRC32_IEEE
+	help
+	  Enable the hardware CRC driver for ABOV32 SoCs. The IP has a fixed
+	  set of hardware polynomials (CRC-8, CRC-16, CRC-16/CCITT and
+	  CRC-32/IEEE); there is no user-programmable polynomial register.

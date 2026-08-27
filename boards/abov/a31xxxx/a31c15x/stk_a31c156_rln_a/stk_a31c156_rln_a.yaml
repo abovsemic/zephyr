@@ -13,4 +13,5 @@ toolchain:
 supported:
   - uart
   - gpio
+  - crc
 vendor: abov
