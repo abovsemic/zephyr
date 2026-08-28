@@ -18,6 +18,21 @@
 		};
 	};
 
+	/*
+	 * UART0's TX/RX pins (PF0/PF1, ALT4 -- see Board/stk_a31c156_rln_a.h)
+	 * are shared with the on-board SWD debug port on this STK, so UART0
+	 * is not usable here. UART1 Pin Configuration (PB6: TX, PB7: RX,
+	 * ALT1) instead, per startup_a31c15x.h's P6/P7 mux comments
+	 * ("0:PB6 1:TXD1" / "0:PB7 1:RXD1") and Board/bare.h's
+	 * UART1_TX_PORT/UART1_RX_PORT (1/Port B, pins 6/7, mux 1).
+	 */
+	uart1_default: uart1_default {
+		group1 {
+			pinmux = <ABOV_PINMUX(1, 6, 1)>, /* PB6 - UART1_TX (ALT1) */
+				 <ABOV_PINMUX(1, 7, 1)>; /* PB7 - UART1_RX (ALT1) */
+		};
+	};
+
 	/* I2C0 Pin Configuration (PD0: SCL, PD1: SDA, ALT1) */
 	i2c0_default: i2c0_default {
 		group1 {

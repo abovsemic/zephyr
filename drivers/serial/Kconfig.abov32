@@ -12,3 +12,17 @@ config USART_ABOV32
 	help
 	  Enable the asynchronous (UART mode) driver for the ABOV32 USART
 	  peripheral, built on the ABOV HLL USART API (hll_usart.h).
+
+config UART_ABOV32
+	bool "ABOV32 UART serial driver"
+	default y
+	depends on DT_HAS_ABOV_ABOV32_UART_ENABLED
+	select PINCTRL
+	select CLOCK_CONTROL
+	select SERIAL_HAS_DRIVER
+	select SERIAL_SUPPORT_INTERRUPT
+	help
+	  Enable the driver for the ABOV32 UART peripheral, a dedicated
+	  16550-style asynchronous UART built on the ABOV HLL UART API
+	  (hll_uart.h). Distinct from the ABOV32 USART peripheral (see
+	  USART_ABOV32).

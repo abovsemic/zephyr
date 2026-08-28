@@ -77,6 +77,16 @@
 			compatible = "abov,abov32-uart";
 			reg = <0x40008000 0x100>;
 			interrupts = <20 0>;
+			uart-id = <0>;
+			clocks = <&cctl ABOV32_CLOCK_PCLK>;
+			status = "disabled";
+		};
+
+		uart1: uart@40008100 {
+			compatible = "abov,abov32-uart";
+			reg = <0x40008100 0x100>;
+			interrupts = <21 0>;
+			uart-id = <1>;
 			clocks = <&cctl ABOV32_CLOCK_PCLK>;
 			status = "disabled";
 		};

@@ -84,6 +84,17 @@
 	status = "okay";
 };
 
+/* UART0's TX/RX pins (PF0/PF1) are shared with the on-board SWD debug port
+ * on this STK, so UART0 stays disabled here; see stk_a31c156_rln_a-pinctrl.dtsi.
+ */
+
+&uart1 {
+	status = "okay";
+	current-speed = <115200>;
+	pinctrl-0 = <&uart1_default>;
+	pinctrl-names = "default";
+};
+
 /* TODO: re-enable once the I2C driver/binding for ABOV32 exists. */
 /*
  * &i2c0 {

@@ -1,0 +1,28 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+description: |
+  ABOV32 UART controller, driven via the ABOV HLL UART API (hll_uart.h).
+  This is a dedicated 16550-style asynchronous UART, distinct from the
+  ABOV32 USART peripheral (abov,abov32-usart) which also supports
+  synchronous and SPI modes.
+
+compatible: "abov,abov32-uart"
+
+include: [uart-controller.yaml, pinctrl-device.yaml, base.yaml]
+
+properties:
+  reg:
+    required: true
+
+  interrupts:
+    required: true
+
+  clocks:
+    required: true
+
+  uart-id:
+    type: int
+    required: true
+    description: |
+      HAL UART_ID_e instance index (0 = UART0, 1 = UART1, 2 = UART2).

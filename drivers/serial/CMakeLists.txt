@@ -13,10 +13,26 @@ zephyr_library_sources_ifdef(CONFIG_USBD_CDC_ACM_CLASS ${ZEPHYR_BASE}/misc/empty
 zephyr_library_sources_ifdef(CONFIG_USB_CDC_ACM ${ZEPHYR_BASE}/misc/empty_file.c)
 # zephyr-keep-sorted-stop
 
+# abov_module.h (modules/hal/abov32/audk32/ProductConfig/A31xxxx/Config) only
+# defines _MODULE_UART -- which uart_abov32.c depends on via hll_uart.h's
+# CRC-IP-version-dispatch-style UART version dispatch (hal_uart_prv.h) -- when
+# CONFIG_HAL_UART == 1. That Keil RTE-style checkbox defaults to 0
+# (abov_module_config.h); debug_a31c15x.h only forces it on when
+# TARGET_SERIAL_MODULE selects the UART debug console, which this board does
+# not (it uses USART10). zephyr_compile_definitions() is global regardless of
+# which CMakeLists.txt calls it, so setting it here -- gated on the Kconfig
+# symbol that already governs whether uart_abov32.c is even built -- means
+# any app that enables the ABOV32 UART driver gets it automatically. See
+# drivers/crc/CMakeLists.txt for the same pattern applied to CONFIG_HAL_CRC.
+if(CONFIG_UART_ABOV32)
+  zephyr_compile_definitions(CONFIG_HAL_UART=1)
+endif()
+
 # zephyr-keep-sorted-start
 zephyr_library_sources_ifdef(CONFIG_LEUART_GECKO leuart_gecko.c)
 zephyr_library_sources_ifdef(CONFIG_LPUART_ESP32 lpuart_esp32.c)
 zephyr_library_sources_ifdef(CONFIG_SERIAL_ESP32_USB serial_esp32_usb.c)
+zephyr_library_sources_ifdef(CONFIG_UART_ABOV32 uart_abov32.c)
 zephyr_library_sources_ifdef(CONFIG_UART_AESC uart_aesc.c)
 zephyr_library_sources_ifdef(CONFIG_UART_ALTERA uart_altera.c)
 zephyr_library_sources_ifdef(CONFIG_UART_ALTERA_JTAG uart_altera_jtag.c)
