@@ -1,0 +1,11 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+config WDT_ABOV32
+	bool "ABOV32 watchdog driver"
+	default y
+	depends on DT_HAS_ABOV_ABOV32_WDT_ENABLED
+	help
+	  Enable the driver for the ABOV32 watchdog timer peripheral, built on
+	  the ABOV HLL WDT API (hll_wdt.h). The counter runs from the internal
+	  32 kHz LSI oscillator; count-match (window) mode is not supported.

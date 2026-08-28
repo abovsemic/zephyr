@@ -73,6 +73,21 @@
 			status = "disabled";
 		};
 
+		/*
+		 * WDT lives inside the SCU's own 1 KB register page (see cctl@
+		 * above) rather than a separate peripheral block; there's no
+		 * peripheral-bus clock gate for it (HAL_WDT_Init() never touches
+		 * one), so unlike crc0/uart0/uart1 this node has no "clocks"
+		 * property.
+		 */
+		wdt0: watchdog@40000200 {
+			compatible = "abov,abov32-wdt";
+			reg = <0x40000200 0x100>;
+			interrupts = <4 0>;
+			wdt-id = <0>;
+			status = "disabled";
+		};
+
 		uart0: uart@40008000 {
 			compatible = "abov,abov32-uart";
 			reg = <0x40008000 0x100>;

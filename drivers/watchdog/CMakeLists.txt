@@ -5,11 +5,27 @@ zephyr_syscall_header(${ZEPHYR_BASE}/include/zephyr/drivers/watchdog.h)
 zephyr_library()
 zephyr_library_property(ALLOW_EMPTY TRUE)
 
+# abov_module.h (modules/hal/abov32/audk32/ProductConfig/A31xxxx/Config) only
+# defines _MODULE_WDT -- which wdt_abov32.c depends on via hll_wdt.h's
+# WDT-IP-version dispatch (hal_wdt_prv.h) -- when CONFIG_HAL_WDT == 1. That
+# Keil RTE-style checkbox defaults to 0 (abov_module_config.h) and nothing
+# else on this board forces it on (debug_a31c15x.h only forces on whichever
+# serial peripheral is the debug console). zephyr_compile_definitions() is
+# global regardless of which CMakeLists.txt calls it, so setting it here --
+# gated on the Kconfig symbol that already governs whether wdt_abov32.c is
+# even built -- means any app that enables the ABOV32 WDT driver gets it
+# automatically. See drivers/crc/CMakeLists.txt for the same pattern applied
+# to CONFIG_HAL_CRC.
+if(CONFIG_WDT_ABOV32)
+  zephyr_compile_definitions(CONFIG_HAL_WDT=1)
+endif()
+
 # zephyr-keep-sorted-start
 zephyr_library_sources_ifdef(CONFIG_FWDGT_GD32 wdt_fwdgt_gd32.c)
 zephyr_library_sources_ifdef(CONFIG_IWDG_STM32 wdt_iwdg_stm32.c)
 zephyr_library_sources_ifdef(CONFIG_USERSPACE wdt_handlers.c)
 zephyr_library_sources_ifdef(CONFIG_WDOG_CMSDK_APB wdt_cmsdk_apb.c)
+zephyr_library_sources_ifdef(CONFIG_WDT_ABOV32 wdt_abov32.c)
 zephyr_library_sources_ifdef(CONFIG_WDT_ADI_MAX42500 wdt_adi_max42500.c)
 zephyr_library_sources_ifdef(CONFIG_WDT_AMBIQ wdt_ambiq.c)
 zephyr_library_sources_ifdef(CONFIG_WDT_AMEBA wdt_ameba.c)
