@@ -1,0 +1,31 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+description: |
+  ABOV32 Free Run Timer, driven via the ABOV HLL FRT API (hll_frt.h). A
+  32-bit up-counter with two modes (CTRL.MODE, per the SVD): "Free-Run
+  Timer" (wraps at 0xFFFFFFFF, overflow interrupt) and "Periodic Timer"
+  (wraps/reloads at the match register MCNT, match interrupt) -- the driver
+  always uses Periodic mode, mapping MCNT directly onto the Counter API's
+  top value. There is only one match register, so channel alarms
+  (counter_set_channel_alarm()) are not supported.
+
+compatible: "abov,abov32-frt"
+
+include: base.yaml
+
+properties:
+  reg:
+    required: true
+
+  interrupts:
+    required: true
+
+  clocks:
+    required: true
+
+  frt-id:
+    type: int
+    required: true
+    description: |
+      HAL FRT_ID_e instance index (0 = FRT0).

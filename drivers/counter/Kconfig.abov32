@@ -1,0 +1,12 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+config COUNTER_ABOV32
+	bool "ABOV32 Free Run Timer counter driver"
+	default y
+	depends on DT_HAS_ABOV_ABOV32_FRT_ENABLED
+	help
+	  Enable the driver for the ABOV32 Free Run Timer (FRT) peripheral,
+	  built on the ABOV HLL FRT API (hll_frt.h). Runs from the internal
+	  32 kHz LSI oscillator; only a single top-value/match channel is
+	  supported (no independent alarm channels).

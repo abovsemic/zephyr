@@ -88,6 +88,10 @@
 	status = "okay";
 };
 
+&frt0 {
+	status = "okay";
+};
+
 /* UART0's TX/RX pins (PF0/PF1) are shared with the on-board SWD debug port
  * on this STK, so UART0 stays disabled here; see stk_a31c156_rln_a-pinctrl.dtsi.
  */

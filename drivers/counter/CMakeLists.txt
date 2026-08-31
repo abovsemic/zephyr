@@ -4,12 +4,27 @@ zephyr_syscall_header(${ZEPHYR_BASE}/include/zephyr/drivers/counter.h)
 
 zephyr_library()
 
+# abov_module.h (modules/hal/abov32/audk32/ProductConfig/A31xxxx/Config) only
+# defines _MODULE_FRT -- which counter_abov32.c depends on via hll_frt.h's
+# FRT-IP-version dispatch (hal_frt_prv.h) -- when CONFIG_HAL_FRT == 1. That
+# Keil RTE-style checkbox defaults to 0 (abov_module_config.h) and nothing
+# else on this board forces it on. zephyr_compile_definitions() is global
+# regardless of which CMakeLists.txt calls it, so setting it here -- gated
+# on the Kconfig symbol that already governs whether counter_abov32.c is
+# even built -- means any app that enables the ABOV32 FRT driver gets it
+# automatically. See drivers/crc/CMakeLists.txt for the same pattern applied
+# to CONFIG_HAL_CRC.
+if(CONFIG_COUNTER_ABOV32)
+  zephyr_compile_definitions(CONFIG_HAL_FRT=1)
+endif()
+
 zephyr_library_sources_ifdef(CONFIG_COUNTER_SHELL counter_timer_shell.c)
 zephyr_library_sources_ifdef(CONFIG_USERSPACE counter_handlers.c)
 
 # zephyr-keep-sorted-start
 zephyr_library_sources_ifdef(CONFIG_ACE_V1X_ART_COUNTER counter_ace_v1x_art.c)
 zephyr_library_sources_ifdef(CONFIG_ACE_V1X_RTC_COUNTER counter_ace_v1x_rtc.c)
+zephyr_library_sources_ifdef(CONFIG_COUNTER_ABOV32 counter_abov32.c)
 zephyr_library_sources_ifdef(CONFIG_COUNTER_AMBIQ counter_ambiq_timer.c)
 zephyr_library_sources_ifdef(CONFIG_COUNTER_ANDES_ATCPIT100 counter_andes_atcpit100.c)
 zephyr_library_sources_ifdef(CONFIG_COUNTER_BEE_RTC counter_bee_rtc.c)

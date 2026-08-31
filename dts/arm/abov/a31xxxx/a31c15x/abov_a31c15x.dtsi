@@ -88,6 +88,15 @@
 			status = "disabled";
 		};
 
+		frt0: counter@40000600 {
+			compatible = "abov,abov32-frt";
+			reg = <0x40000600 0x100>;
+			interrupts = <5 0>;
+			frt-id = <0>;
+			clocks = <&cctl ABOV32_CLOCK_PCLK>;
+			status = "disabled";
+		};
+
 		uart0: uart@40008000 {
 			compatible = "abov,abov32-uart";
 			reg = <0x40008000 0x100>;

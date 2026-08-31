@@ -72,6 +72,7 @@ module-str = counter
 source "subsys/logging/Kconfig.template.log_config"
 
 # zephyr-keep-sorted-start
+source "drivers/counter/Kconfig.abov32"
 source "drivers/counter/Kconfig.ace"
 source "drivers/counter/Kconfig.ambiq"
 source "drivers/counter/Kconfig.ameba_tmr"
