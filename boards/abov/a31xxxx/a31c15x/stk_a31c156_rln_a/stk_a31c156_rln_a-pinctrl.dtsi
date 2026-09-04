@@ -42,4 +42,14 @@
 			drive-open-drain;
 		};
 	};
+
+	/* I2C1 Pin Configuration (PA1: SCL1, PA0: SDA1, ALT1) */
+	i2c1_default: i2c1_default {
+		group1 {
+			pinmux = <ABOV_PINMUX(0, 1, 1)>, /* PA1 - I2C1_SCL (ALT1) */
+				 <ABOV_PINMUX(0, 0, 1)>; /* PA0 - I2C1_SDA (ALT1) */
+			bias-pull-up;
+			drive-open-drain;
+		};
+	};
 };

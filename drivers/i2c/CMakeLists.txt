@@ -6,6 +6,20 @@ zephyr_library()
 
 zephyr_library_sources(i2c_common.c)
 
+# abov_module.h (modules/hal/abov32/audk32/ProductConfig/A31xxxx/Config) only
+# defines _MODULE_I2C -- which i2c_abov32.c depends on via hll_i2c.h's
+# I2C-IP-version dispatch (hal_i2c_prv.h) -- when CONFIG_HAL_I2C == 1. That
+# Keil RTE-style checkbox defaults to 0 (abov_module_config.h) and nothing
+# else on this board forces it on. zephyr_compile_definitions() is global
+# regardless of which CMakeLists.txt calls it, so setting it here -- gated on
+# the Kconfig symbol that already governs whether i2c_abov32.c is even built
+# -- means any app that enables the ABOV32 I2C driver gets it automatically.
+# See drivers/watchdog/CMakeLists.txt for the same pattern applied to
+# CONFIG_HAL_WDT.
+if(CONFIG_I2C_ABOV32)
+  zephyr_compile_definitions(CONFIG_HAL_I2C=1)
+endif()
+
 # zephyr-keep-sorted-start
 zephyr_library_sources_ifdef(CONFIG_GPIO_I2C_SWITCH gpio_i2c_switch.c)
 zephyr_library_sources_ifdef(CONFIG_I2C_BITBANG i2c_bitbang.c)
@@ -23,6 +37,7 @@ add_subdirectory_ifdef(CONFIG_I2C_TARGET target)
 zephyr_library_include_directories_ifdef(CONFIG_I2C_AMEBA ${ZEPHYR_BASE}/drivers/dma)
 
 # zephyr-keep-sorted-start
+zephyr_library_sources_ifdef(CONFIG_I2C_ABOV32 i2c_abov32.c)
 zephyr_library_sources_ifdef(CONFIG_I2C_AMBIQ i2c_ambiq.c)
 zephyr_library_sources_ifdef(CONFIG_I2C_AMBIQ_IOS i2c_ambiq_ios.c)
 zephyr_library_sources_ifdef(CONFIG_I2C_AMEBA i2c_ameba.c)

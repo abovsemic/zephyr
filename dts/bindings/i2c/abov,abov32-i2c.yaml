@@ -1,0 +1,29 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+description: |
+  ABOV32 I2C controller, driven via the ABOV HLL I2C API (hll_i2c.h).
+
+  Unlike UART/WDT/FRT, this IP has no SCU MCCR clock-source mux: SCLL/SCLH
+  always divide the peripheral clock (SystemPeriClock/PCLK) directly, so
+  clock-frequency here sets the I2C bus speed, not an input clock.
+
+compatible: "abov,abov32-i2c"
+
+include: [i2c-controller.yaml, pinctrl-device.yaml, base.yaml]
+
+properties:
+  reg:
+    required: true
+
+  interrupts:
+    required: true
+
+  clocks:
+    required: true
+
+  i2c-id:
+    type: int
+    required: true
+    description: |
+      HAL I2C_ID_e instance index (0 = I2C0, 1 = I2C1).

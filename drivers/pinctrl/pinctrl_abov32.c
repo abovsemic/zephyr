@@ -32,9 +32,14 @@ static void pinctrl_configure_pin(pinctrl_soc_pin_t pin)
 	/* 1. Enable PCU protected register write access */
 	HLL_PCU_SetWriteEnable();
 
-	/* 2. Configure alternate function (pin multiplexing) via HLL */
-	HLL_PCU_SetAltMode(port, pin_num);
-
+	/*
+	 * 2. Configure alternate function (pin multiplexing) via HLL. Once a
+	 *    pin's ALT type is selected, the peripheral's own open-drain vs
+	 *    push-pull behavior applies automatically -- there is no separate
+	 *    software output-type selection for alt-function pins on this
+	 *    chip (confirmed against the datasheet), so `otype` only matters
+	 *    for plain-GPIO pins, not here.
+	 */
 	if (pin_num < 8U) {
 		HLL_PCU_SetAlt1Type(port, pin_num, alt);
 	} else {
@@ -44,15 +49,10 @@ static void pinctrl_configure_pin(pinctrl_soc_pin_t pin)
 	/* 3. Configure pull-up / pull-down mode via HLL */
 	HLL_PCU_SetPullUpDown(port, pin_num, pupd);
 
-	/* 4. Configure output type (Open-Drain vs Push-Pull) via HLL */
-	if (otype == ABOV_OTYPE_OD) {
-		HLL_PCU_SetOutputType(port, pin_num, PCU_INOUT_OUTPUT_OPEN_DRAIN);
-	} else {
-		HLL_PCU_SetOutputType(port, pin_num, PCU_INOUT_OUTPUT_PUSH_PULL);
-	}
-
-	/* 5. Disable PCU protected register write access */
+	/* 4. Disable PCU protected register write access */
 	HLL_PCU_SetWriteDisable();
+
+	ARG_UNUSED(otype);
 }
 
 /**

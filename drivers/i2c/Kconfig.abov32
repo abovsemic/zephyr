@@ -1,0 +1,13 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+config I2C_ABOV32
+	bool "ABOV32 I2C driver"
+	default y
+	depends on DT_HAS_ABOV_ABOV32_I2C_ENABLED
+	select PINCTRL
+	help
+	  Enable the driver for the ABOV32 I2C peripheral, built on the ABOV
+	  HLL I2C API (hll_i2c.h). Controller-mode transfers are polling-only;
+	  target (slave) mode is interrupt-driven. A single instance supports
+	  only one role at a time -- see i2c_abov32.c for why.

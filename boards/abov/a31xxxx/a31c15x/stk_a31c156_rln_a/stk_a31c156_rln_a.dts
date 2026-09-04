@@ -8,6 +8,7 @@
 #include <abov/a31xxxx/a31c15x/abov_a31c15x.dtsi>
 #include "stk_a31c156_rln_a-pinctrl.dtsi"
 #include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/i2c/i2c.h>
 
 / {
 	model = "ABOV STK-A31C156-RLN-A Starter Kit";
@@ -103,11 +104,21 @@
 	pinctrl-names = "default";
 };
 
-/* TODO: re-enable once the I2C driver/binding for ABOV32 exists. */
+&i2c0 {
+	status = "okay";
+	clock-frequency = <I2C_BITRATE_FAST>;
+	pinctrl-0 = <&i2c0_default>;
+	pinctrl-names = "default";
+};
+
 /*
- * &i2c0 {
- *	status = "okay";
- *	pinctrl-0 = <&i2c0_default>;
- *	pinctrl-names = "default";
- * };
+ * I2C1 (PA1: SCL1, PA0: SDA1, ALT1) -- for the on-board I2C0<->I2C1
+ * loopback sample: jumper PD0<->PA1 (SCL) and PD1<->PA0 (SDA), see
+ * samples/boards/abov/peripheral/i2c.
  */
+&i2c1 {
+	status = "okay";
+	clock-frequency = <I2C_BITRATE_FAST>;
+	pinctrl-0 = <&i2c1_default>;
+	pinctrl-names = "default";
+};
