@@ -1,0 +1,30 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+config SPI_ABOV32
+	bool "ABOV32 SPI driver"
+	default y
+	depends on DT_HAS_ABOV_ABOV32_SPI_ENABLED
+	select PINCTRL
+	help
+	  Enable the driver for the dedicated ABOV32 SPI0/SPI1 peripheral,
+	  built on the ABOV HLL SPI API (hll_spi.h). Polling-based; supports
+	  both controller and (experimental, CONFIG_SPI_SLAVE) peripheral
+	  mode. Distinct from SPI_ABOV32_USART, which runs a USART instance
+	  in its SPI mode instead.
+
+config SPI_ABOV32_USART
+	bool "ABOV32 USART-as-SPI driver"
+	default y
+	depends on DT_HAS_ABOV_ABOV32_USART_SPI_ENABLED
+	select PINCTRL
+	help
+	  Enable the driver for an ABOV32 USART peripheral running in its SPI
+	  (synchronous) mode, built on the ABOV HLL USART API (hll_usart.h).
+	  Polling-based; supports both controller and (experimental,
+	  CONFIG_SPI_SLAVE) peripheral mode. There is no dedicated SPI0/SPI1
+	  driver instance available on every board, so this reuses one of the
+	  otherwise-idle USART instances (USART11/USART12) instead. Native
+	  hardware chip-select generation is a no-op on this chip, so use
+	  cs-gpios (or no CS at all, e.g. for a loopback test) rather than
+	  relying on it.

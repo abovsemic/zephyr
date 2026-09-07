@@ -1,0 +1,11 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+description: |
+  Placeholder SPI device node for an external MOSI-MISO loopback test: no
+  real peripheral is being talked to, this just satisfies the SPI bus's
+  #address-cells/#size-cells so the sample has a struct spi_config to build.
+
+compatible: "abov,spi-loopback"
+
+include: [spi-device.yaml]

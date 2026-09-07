@@ -122,3 +122,35 @@
 	pinctrl-0 = <&i2c1_default>;
 	pinctrl-names = "default";
 };
+
+/*
+ * USART11 running in SPI mode (PD2: MOSI11, PD3: MISO11, PD4: SCK11), as the
+ * peripheral (slave) side of the SPI1<->USART11-SPI cross-device sample --
+ * see the &spi1 node below and samples/boards/abov/peripheral/spi. Addressed
+ * directly in slave mode by that sample, not through a spi-device child
+ * node. usart11 (async UART mode, same physical block) stays disabled.
+ */
+&usart11_spi {
+	status = "okay";
+	pinctrl-0 = <&usart11_spi_default>;
+	pinctrl-names = "default";
+};
+
+/*
+ * SPI1 (PE5: SCK1, PE6: MISO1, PE7: MOSI1, ALT1) -- for the SPI1(master)
+ * <-> USART11-as-SPI(slave) cross-device sample: jumper PE5<->PD4 (SCK),
+ * PE7<->PD2 (MOSI), PE6<->PD3 (MISO). No CS: usart11_spi's own device is
+ * addressed directly in slave mode, not through a spi-device child node --
+ * see samples/boards/abov/peripheral/spi.
+ */
+&spi1 {
+	status = "okay";
+	pinctrl-0 = <&spi1_default>;
+	pinctrl-names = "default";
+
+	remote_slave: remote_slave@0 {
+		compatible = "abov,spi-loopback";
+		reg = <0>;
+		spi-max-frequency = <1000000>;
+	};
+};

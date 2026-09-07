@@ -52,4 +52,32 @@
 			drive-open-drain;
 		};
 	};
+
+	/*
+	 * USART11-as-SPI Pin Configuration (PD2: MOSI11, PD3: MISO11,
+	 * PD4: SCK11, ALT4), per startup_a31c15x.h's Port D mux comments
+	 * ("4:MOSI11" / "4:MISO11" / "4:SCK11"). SS11 (PD5, ALT4) is
+	 * deliberately not muxed here: the loopback sample uses no CS at all.
+	 */
+	usart11_spi_default: usart11_spi_default {
+		group1 {
+			pinmux = <ABOV_PINMUX(3, 2, 4)>, /* PD2 - MOSI11 (ALT4) */
+				 <ABOV_PINMUX(3, 3, 4)>, /* PD3 - MISO11 (ALT4) */
+				 <ABOV_PINMUX(3, 4, 4)>; /* PD4 - SCK11 (ALT4) */
+		};
+	};
+
+	/*
+	 * SPI1 Pin Configuration (PE5: SCK1, PE6: MISO1, PE7: MOSI1, ALT1),
+	 * per the datasheet's Alternate Function table. SS1 (PE4, ALT1) is
+	 * deliberately not muxed here: this sample (SPI1 master <-> USART11
+	 * SPI slave) uses no CS at all.
+	 */
+	spi1_default: spi1_default {
+		group1 {
+			pinmux = <ABOV_PINMUX(4, 5, 1)>, /* PE5 - SPI1_SCK  (ALT1) */
+				 <ABOV_PINMUX(4, 6, 1)>, /* PE6 - SPI1_MISO (ALT1) */
+				 <ABOV_PINMUX(4, 7, 1)>; /* PE7 - SPI1_MOSI (ALT1) */
+		};
+	};
 };

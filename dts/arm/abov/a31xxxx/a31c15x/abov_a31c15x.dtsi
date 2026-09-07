@@ -133,6 +133,23 @@
 			status = "disabled";
 		};
 
+		/*
+		 * Same physical register block as usart11 above, running in
+		 * SPI (synchronous) mode instead of async UART mode -- a
+		 * board must enable at most ONE of usart11 / usart11_spi,
+		 * never both (see abov,abov32-usart-spi.yaml).
+		 */
+		usart11_spi: spi@40001100 {
+			compatible = "abov,abov32-usart-spi";
+			reg = <0x40001100 0x100>;
+			interrupts = <17 0>;
+			usart-id = <1>;
+			clocks = <&cctl ABOV32_CLOCK_PCLK>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "disabled";
+		};
+
 		usart12: usart@40001200 {
 			compatible = "abov,abov32-usart";
 			reg = <0x40001200 0x100>;
@@ -164,6 +181,35 @@
 			reg = <0x4000a100 0x100>;
 			interrupts = <26 0>;
 			i2c-id = <1>;
+			clocks = <&cctl ABOV32_CLOCK_PCLK>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "disabled";
+		};
+
+		/*
+		 * Like I2C, no SCU MCCR clock-source mux: BR.BR always divides
+		 * SystemPeriClock (PCLK) directly (see hll_spi.h). IRQ vector
+		 * is shared with a comparator peripheral on this SoC
+		 * (CMPn_SPIn_IRQn) -- not used here since spi_abov32.c is
+		 * polling-only.
+		 */
+		spi0: spi@40009000 {
+			compatible = "abov,abov32-spi";
+			reg = <0x40009000 0x100>;
+			interrupts = <24 0>;
+			spi-id = <0>;
+			clocks = <&cctl ABOV32_CLOCK_PCLK>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "disabled";
+		};
+
+		spi1: spi@40009100 {
+			compatible = "abov,abov32-spi";
+			reg = <0x40009100 0x100>;
+			interrupts = <25 0>;
+			spi-id = <1>;
 			clocks = <&cctl ABOV32_CLOCK_PCLK>;
 			#address-cells = <1>;
 			#size-cells = <0>;

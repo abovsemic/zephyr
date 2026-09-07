@@ -1,0 +1,27 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+description: |
+  ABOV32 dedicated SPI0/SPI1 controller, driven via the ABOV HLL SPI API
+  (hll_spi.h). Distinct from a USART instance running in its SPI mode (see
+  abov,abov32-usart-spi).
+
+compatible: "abov,abov32-spi"
+
+include: [spi-controller.yaml, pinctrl-device.yaml, base.yaml]
+
+properties:
+  reg:
+    required: true
+
+  interrupts:
+    required: false
+
+  clocks:
+    required: true
+
+  spi-id:
+    type: int
+    required: true
+    description: |
+      HAL SPI_ID_e instance index (0 = SPI0, 1 = SPI1).

@@ -4,6 +4,24 @@ zephyr_syscall_header(${ZEPHYR_BASE}/include/zephyr/drivers/spi.h)
 
 zephyr_library()
 
+# abov_module.h (modules/hal/abov32/audk32/ProductConfig/A31xxxx/Config) only
+# defines _MODULE_USART -- which spi_abov32_usart.c depends on via
+# hll_usart.h's USART-IP-version dispatch (hal_usart_prv.h) -- when
+# CONFIG_HAL_USART == 1. That Keil RTE-style checkbox is already forced on by
+# debug_a31c15x.h on this board (USART10 is the debug console), but this
+# driver can target USART11/USART12 instead, so don't rely on that
+# incidental enablement -- force it here too, gated on the Kconfig symbol
+# that already governs whether spi_abov32_usart.c is even built. See
+# drivers/watchdog/CMakeLists.txt for the same pattern applied to
+# CONFIG_HAL_WDT.
+if(CONFIG_SPI_ABOV32_USART)
+  zephyr_compile_definitions(CONFIG_HAL_USART=1)
+endif()
+
+if(CONFIG_SPI_ABOV32)
+  zephyr_compile_definitions(CONFIG_HAL_SPI=1)
+endif()
+
 # zephyr-keep-sorted-start
 zephyr_library_sources_ifdef(CONFIG_SPI_ASYNC spi_signal.c)
 zephyr_library_sources_ifdef(CONFIG_SPI_RTIO spi_rtio.c)
@@ -14,6 +32,8 @@ zephyr_library_sources_ifdef(CONFIG_USERSPACE spi_handlers.c)
 # zephyr-keep-sorted-start
 zephyr_library_sources_ifdef(CONFIG_ESP32_SPIM spi_esp32_spim.c)
 zephyr_library_sources_ifdef(CONFIG_NXP_S32_SPI spi_nxp_s32.c)
+zephyr_library_sources_ifdef(CONFIG_SPI_ABOV32 spi_abov32.c)
+zephyr_library_sources_ifdef(CONFIG_SPI_ABOV32_USART spi_abov32_usart.c)
 zephyr_library_sources_ifdef(CONFIG_SPI_AMBIQ_BLEIF spi_ambiq_bleif.c)
 zephyr_library_sources_ifdef(CONFIG_SPI_AMBIQ_SPIC spi_ambiq_spic.c)
 zephyr_library_sources_ifdef(CONFIG_SPI_AMBIQ_SPID spi_ambiq_spid.c)

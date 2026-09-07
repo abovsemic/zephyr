@@ -1,0 +1,30 @@
+# Copyright (c) 2026 ABOV Semiconductor Co., Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+description: |
+  ABOV32 USART peripheral running in its SPI (synchronous) mode, driven via
+  the ABOV HLL USART API (hll_usart.h). This is the SAME physical register
+  block as abov,abov32-usart (async UART mode) -- a USART instance can be
+  wired up as either compatible in the SoC dtsi, but a board must only
+  enable ONE of the two nodes for a given instance, never both, since they
+  would otherwise both try to initialize the same hardware.
+
+compatible: "abov,abov32-usart-spi"
+
+include: [spi-controller.yaml, pinctrl-device.yaml, base.yaml]
+
+properties:
+  reg:
+    required: true
+
+  interrupts:
+    required: false
+
+  clocks:
+    required: true
+
+  usart-id:
+    type: int
+    required: true
+    description: |
+      HAL USART_ID_e instance index (0 = USART10, 1 = USART11, 2 = USART12).
